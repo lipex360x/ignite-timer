@@ -1,10 +1,10 @@
-import border from '../constants/border'
-import color from '../constants/color'
-import font from '../constants/font'
-import grid from '../constants/grid'
-import layers from '../constants/layers'
-import spacing from '../constants/spacing'
-import transition from '../constants/transition'
+import border from '@/styles/constants/border'
+import color from '@/styles/constants/color'
+import font from '@/styles/constants/font'
+import grid from '@/styles/constants/grid'
+import layers from '@/styles/constants/layers'
+import spacing from '@/styles/constants/spacing'
+import transition from '@/styles/constants/transition'
 
 export const defaultTheme = {
   border,
