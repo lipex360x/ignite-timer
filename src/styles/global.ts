@@ -33,12 +33,12 @@ export const GlobalStyles = createGlobalStyle`
     html {
       font-size: 62.5%;
     }
-    
+
     :focus {
       outline: 0;
-      box-shadow: 0 0 0 2px ${theme.color['green-500']}
+      box-shadow: 0 0 0 2px ${theme.color['green-500']};
     }
-    
+
     body {
       color: ${theme.color.white};
       background: ${theme.color['gray-900']};
@@ -48,7 +48,10 @@ export const GlobalStyles = createGlobalStyle`
       }
     }
 
-    body, input, textarea, button {
+    body,
+    input,
+    textarea,
+    button {
       font-family: ${theme.font.family};
     }
   `}

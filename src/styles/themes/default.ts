@@ -13,5 +13,5 @@ export const defaultTheme = {
   grid,
   layers,
   spacing,
-  transition
+  transition,
 } as const

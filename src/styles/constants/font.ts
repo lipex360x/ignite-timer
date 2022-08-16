@@ -1,5 +1,6 @@
 export default {
-  family: "Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+  family:
+    "Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
 
   light: 300,
   normal: 400,
@@ -12,6 +13,6 @@ export default {
     large: '1.8rem',
     xlarge: '2.0rem',
     xxlarge: '2.8rem',
-    huge: '5.2rem'
-  }
+    huge: '5.2rem',
+  },
 } as const
