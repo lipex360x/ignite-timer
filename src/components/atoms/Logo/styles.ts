@@ -1,7 +1,5 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 export const Wrapper = styled.img`
-  ${({ theme }) => css`
-    width: fit-content;
-  `}
+  width: fit-content;
 `
