@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { Play } from 'phosphor-react'
 import * as S from './styles'
+import { useState } from 'react'
 
 const formValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
@@ -14,7 +15,18 @@ const formValidationSchema = zod.object({
 
 type NewCycleFormProps = zod.infer<typeof formValidationSchema>
 
+type CycleProps = {
+  id: string
+  task: string
+  minutesAmount: number
+}
+
 export const TaskForm = () => {
+  const [cycles, setCycles] = useState<CycleProps[]>([])
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+
+  const id = String(new Date().getTime())
+
   const {
     register,
     handleSubmit,
@@ -29,12 +41,24 @@ export const TaskForm = () => {
     },
   })
 
-  const onSubmit = (data: any) => {
-    console.log(data)
+  const onSubmit = ({ task, minutesAmount }: NewCycleFormProps) => {
+    const newCycle: CycleProps = {
+      id,
+      task,
+      minutesAmount,
+    }
+
+    setCycles((state) => [...state, newCycle])
+    setActiveCycleId(id)
+
     reset()
   }
 
-  if (errors) console.log(errors)
+  if (Object.keys(errors).length) console.log(errors)
+
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  console.log(activeCycle)
 
   const task = watch('task')
   const isFormDisabled = !task
