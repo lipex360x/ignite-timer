@@ -1,3 +1,5 @@
+import { HistoryList } from '@/components/organisms/HistoryList'
+
 export function History() {
-  return <h1>History</h1>
+  return <HistoryList />
 }
