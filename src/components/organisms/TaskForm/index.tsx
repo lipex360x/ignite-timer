@@ -12,10 +12,7 @@ const formValidationSchema = zod.object({
     .max(60, 'O Ciclo precisa ser de no máximo 60 minutos'),
 })
 
-type NewCycleFormProps = {
-  task: string
-  minutesAmount: number
-}
+type NewCycleFormProps = zod.infer<typeof formValidationSchema>
 
 export const TaskForm = () => {
   const {
