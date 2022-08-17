@@ -12,13 +12,22 @@ const formValidationSchema = zod.object({
     .max(60, 'O Ciclo precisa ser de no máximo 60 minutos'),
 })
 
+type NewCycleFormProps = {
+  task: string
+  minutesAmount: number
+}
+
 export const TaskForm = () => {
   const {
     register,
     handleSubmit,
     formState: { isValid },
-  } = useForm({
+  } = useForm<NewCycleFormProps>({
     resolver: zodResolver(formValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
   })
 
   const onSubmit = (data: any) => {
