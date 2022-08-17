@@ -1,16 +1,29 @@
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
 import { Play } from 'phosphor-react'
 import * as S from './styles'
 
+const formValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'O ciclo precisa ser de no mínimo 5 minutos')
+    .max(60, 'O Ciclo precisa ser de no máximo 60 minutos'),
+})
+
 export const TaskForm = () => {
-  const { register, handleSubmit, watch } = useForm()
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm({
+    resolver: zodResolver(formValidationSchema),
+  })
 
   const onSubmit = (data: any) => {
     console.log(data)
   }
-
-  const task = watch('task')
-  const isSubmitDisabled = !task
 
   return (
     <S.WrapperForm onSubmit={handleSubmit(onSubmit)}>
@@ -50,7 +63,7 @@ export const TaskForm = () => {
         <span>0</span>
       </S.TimerContainer>
 
-      <S.TimerButton type="submit" disabled={isSubmitDisabled}>
+      <S.TimerButton type="submit" disabled={!isValid}>
         <Play size={24} /> Começar
       </S.TimerButton>
     </S.WrapperForm>
