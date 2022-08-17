@@ -24,6 +24,7 @@ type CycleProps = {
 export const TaskForm = () => {
   const [cycles, setCycles] = useState<CycleProps[]>([])
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
   const id = String(new Date().getTime())
 
@@ -57,6 +58,15 @@ export const TaskForm = () => {
   if (Object.keys(errors).length) console.log(errors)
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
+
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0')
+  const seconds = String(secondsAmount).padStart(2, '0')
 
   console.log(activeCycle)
 
@@ -94,11 +104,11 @@ export const TaskForm = () => {
       </S.FormContainer>
 
       <S.TimerContainer>
-        <span>0</span>
-        <span>0</span>
+        <span>{minutes[0]}</span>
+        <span>{minutes[1]}</span>
         <S.Separator>:</S.Separator>
-        <span>0</span>
-        <span>0</span>
+        <span>{seconds[0]}</span>
+        <span>{seconds[1]}</span>
       </S.TimerContainer>
 
       <S.TimerButton type="submit" disabled={isFormDisabled}>
