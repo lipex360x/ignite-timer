@@ -1,9 +1,19 @@
+import { useForm } from 'react-hook-form'
 import { Play } from 'phosphor-react'
 import * as S from './styles'
 
 export const TaskForm = () => {
+  const { register, handleSubmit, watch } = useForm()
+
+  const onSubmit = (data: any) => {
+    console.log(data)
+  }
+
+  const task = watch('task')
+  const isSubmitDisabled = !task
+
   return (
-    <S.Wrapper>
+    <S.WrapperForm onSubmit={handleSubmit(onSubmit)}>
       <S.FormContainer>
         <label htmlFor="task">Vou trabalhar em</label>
         <S.TaskInput
@@ -11,6 +21,7 @@ export const TaskForm = () => {
           id="task"
           placeholder="Dê um nome para o seu projeto"
           list="task-sugestions"
+          {...register('task')}
         />
 
         <datalist id="task-sugestions">
@@ -25,6 +36,7 @@ export const TaskForm = () => {
           step={5}
           min={5}
           max={60}
+          {...register('minutesAmount', { valueAsNumber: true })}
         />
 
         <span>minutos.</span>
@@ -38,9 +50,9 @@ export const TaskForm = () => {
         <span>0</span>
       </S.TimerContainer>
 
-      <S.TimerButton disabled type="submit">
+      <S.TimerButton type="submit" disabled={isSubmitDisabled}>
         <Play size={24} /> Começar
       </S.TimerButton>
-    </S.Wrapper>
+    </S.WrapperForm>
   )
 }
