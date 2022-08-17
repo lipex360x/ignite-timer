@@ -18,7 +18,9 @@ export const TaskForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { isValid },
+    watch,
+    reset,
+    formState: { errors },
   } = useForm<NewCycleFormProps>({
     resolver: zodResolver(formValidationSchema),
     defaultValues: {
@@ -29,7 +31,13 @@ export const TaskForm = () => {
 
   const onSubmit = (data: any) => {
     console.log(data)
+    reset()
   }
+
+  if (errors) console.log(errors)
+
+  const task = watch('task')
+  const isFormDisabled = !task
 
   return (
     <S.WrapperForm onSubmit={handleSubmit(onSubmit)}>
@@ -69,7 +77,7 @@ export const TaskForm = () => {
         <span>0</span>
       </S.TimerContainer>
 
-      <S.TimerButton type="submit" disabled={!isValid}>
+      <S.TimerButton type="submit" disabled={isFormDisabled}>
         <Play size={24} /> Começar
       </S.TimerButton>
     </S.WrapperForm>
