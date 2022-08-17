@@ -87,7 +87,7 @@ export const MinutesAmountInput = styled(BaseInput)`
   width: 4rem;
 `
 
-export const TimerButton = styled.button`
+export const TimerButtonBase = styled.button`
   ${({ theme }) => css`
     width: 100%;
     padding: 1rem;
@@ -97,13 +97,27 @@ export const TimerButton = styled.button`
     justify-content: center;
     gap: 0.5rem;
     font-weight: bold;
-
-    background: ${theme.color['green-500']};
     color: ${theme.color['gray-100']};
     transition: background 100ms ease-in-out;
+  `}
+`
+
+export const TimerStartButton = styled(TimerButtonBase)`
+  ${({ theme }) => css`
+    background: ${theme.color['green-500']};
 
     &:not(:disabled):hover {
       background: ${theme.color['green-700']};
+    }
+  `}
+`
+
+export const TimerStopButton = styled(TimerButtonBase)`
+  ${({ theme }) => css`
+    background: ${theme.color['red-500']};
+
+    &:not(:disabled):hover {
+      background: ${theme.color['red-700']};
     }
   `}
 `

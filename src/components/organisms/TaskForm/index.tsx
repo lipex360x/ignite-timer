@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
-import { Play } from 'phosphor-react'
+import { HandPalm, Play } from 'phosphor-react'
 import * as S from './styles'
 import { useEffect, useState } from 'react'
 import { differenceInSeconds } from 'date-fns'
@@ -21,6 +21,7 @@ type CycleProps = {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date
 }
 
 export const TaskForm = () => {
@@ -77,6 +78,20 @@ export const TaskForm = () => {
     reset()
   }
 
+  const handleInterruptCycle = () => {
+    setCycles(
+      cycles.map((cycle) => {
+        if (cycle.id === activeCycleId) {
+          return { ...cycle, interruptedDate: new Date() }
+        } else {
+          return cycle
+        }
+      }),
+    )
+
+    setActiveCycleId(null)
+  }
+
   if (Object.keys(errors).length) console.log(errors)
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
@@ -95,6 +110,8 @@ export const TaskForm = () => {
   const task = watch('task')
   const isFormDisabled = !task
 
+  console.log(cycles)
+
   return (
     <S.WrapperForm onSubmit={handleSubmit(onSubmit)}>
       <S.FormContainer>
@@ -103,6 +120,7 @@ export const TaskForm = () => {
           type="text"
           id="task"
           placeholder="Dê um nome para o seu projeto"
+          disabled={!!activeCycle}
           list="task-sugestions"
           {...register('task')}
         />
@@ -116,6 +134,7 @@ export const TaskForm = () => {
           type="number"
           id="minutesAmount"
           placeholder="00"
+          disabled={!!activeCycle}
           step={5}
           min={5}
           max={60}
@@ -133,9 +152,15 @@ export const TaskForm = () => {
         <span>{seconds[1]}</span>
       </S.TimerContainer>
 
-      <S.TimerButton type="submit" disabled={isFormDisabled}>
-        <Play size={24} /> Começar
-      </S.TimerButton>
+      {activeCycle ? (
+        <S.TimerStopButton onClick={handleInterruptCycle} type="button">
+          <HandPalm size={24} /> Interromper
+        </S.TimerStopButton>
+      ) : (
+        <S.TimerStartButton type="submit" disabled={isFormDisabled}>
+          <Play size={24} /> Começar
+        </S.TimerStartButton>
+      )}
     </S.WrapperForm>
   )
 }
