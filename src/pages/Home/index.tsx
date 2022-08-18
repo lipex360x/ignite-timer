@@ -48,24 +48,30 @@ export const useCycleContext = create<CyclesContextProps>((set) => ({
   setCycles: (cycle) => set((state) => ({ cycles: [...state.cycles, cycle] })),
 
   finishCycle: () =>
-    set(({ cycles, activeCycleId }) => ({
-      cycles: cycles.map((cycle) => {
-        if (cycle.id === activeCycleId) cycle.finishedDate = new Date()
-        return cycle
-      }),
-      activeCycle: null,
-      activeCycleId: null,
-    })),
+    set(({ cycles, activeCycleId }) => {
+      document.title = 'Pomo finished'
+      return {
+        cycles: cycles.map((cycle) => {
+          if (cycle.id === activeCycleId) cycle.finishedDate = new Date()
+          return cycle
+        }),
+        activeCycle: null,
+        activeCycleId: null,
+      }
+    }),
 
   interruptCycle: () =>
-    set(({ cycles, activeCycleId }) => ({
-      cycles: cycles.map((cycle) => {
-        if (cycle.id === activeCycleId) cycle.interruptedDate = new Date()
-        return cycle
-      }),
-      activeCycle: null,
-      activeCycleId: null,
-    })),
+    set(({ cycles, activeCycleId }) => {
+      document.title = 'Pomo interrupted'
+      return {
+        cycles: cycles.map((cycle) => {
+          if (cycle.id === activeCycleId) cycle.interruptedDate = new Date()
+          return cycle
+        }),
+        activeCycle: null,
+        activeCycleId: null,
+      }
+    }),
 }))
 
 const formValidationSchema = zod.object({
@@ -82,7 +88,6 @@ export function Home() {
   const {
     activeCycle,
     setCycles,
-    cycles,
     setActiveCycle,
     setAmountSecondsPassed,
     interruptCycle,
@@ -120,10 +125,7 @@ export function Home() {
     reset()
   }
 
-  const handleInterruptCycle = () => {
-    interruptCycle()
-    console.log('cycles', cycles)
-  }
+  const handleInterruptCycle = () => interruptCycle()
 
   if (Object.keys(errors).length) console.log(errors)
 
@@ -131,23 +133,21 @@ export function Home() {
   const isFormDisabled = !task
 
   return (
-    <>
-      <S.WrapperForm onSubmit={handleSubmit(handleCreateNewCycle)}>
-        <FormProvider {...newCycleForm}>
-          <TaskForm />
-        </FormProvider>
+    <S.WrapperForm onSubmit={handleSubmit(handleCreateNewCycle)}>
+      <FormProvider {...newCycleForm}>
+        <TaskForm />
+      </FormProvider>
 
-        <TimerCountdown />
-        {activeCycle ? (
-          <S.TimerStopButton onClick={handleInterruptCycle} type="button">
-            <HandPalm size={24} /> Interromper
-          </S.TimerStopButton>
-        ) : (
-          <S.TimerStartButton type="submit" disabled={isFormDisabled}>
-            <Play size={24} /> Começar
-          </S.TimerStartButton>
-        )}
-      </S.WrapperForm>
-    </>
+      <TimerCountdown />
+      {activeCycle ? (
+        <S.TimerStopButton onClick={handleInterruptCycle} type="button">
+          <HandPalm size={24} /> Interromper
+        </S.TimerStopButton>
+      ) : (
+        <S.TimerStartButton type="submit" disabled={isFormDisabled}>
+          <Play size={24} /> Começar
+        </S.TimerStartButton>
+      )}
+    </S.WrapperForm>
   )
 }
