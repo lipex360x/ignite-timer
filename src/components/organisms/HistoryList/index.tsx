@@ -1,12 +1,16 @@
 import { Heading } from '@/components/atoms/Heading'
 import { StatusBadge } from '@/components/atoms/StatusBadge'
+import { useCycleContext } from '@/contexts/CycleContext'
 import * as S from './styles'
 
 export const HistoryList = () => {
+  const { cycles } = useCycleContext()
+  console.log(cycles)
+
   return (
     <S.Wrapper>
       <Heading>Meu Histórico</Heading>
-
+      <pre>{JSON.stringify(cycles, null, 2)}</pre>
       <S.HistoryContainer>
         <S.TableHistory>
           <thead>
