@@ -5,12 +5,10 @@ import * as S from './styles'
 
 export const HistoryList = () => {
   const { cycles } = useCycleContext()
-  console.log(cycles)
 
   return (
     <S.Wrapper>
       <Heading>Meu Histórico</Heading>
-      <pre>{JSON.stringify(cycles, null, 2)}</pre>
       <S.HistoryContainer>
         <S.TableHistory>
           <thead>
@@ -22,41 +20,20 @@ export const HistoryList = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <StatusBadge type="finalizado" />
-              </td>
-            </tr>
-
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <StatusBadge type="progresso" />
-              </td>
-            </tr>
-
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <StatusBadge type="interrompido" />
-              </td>
-            </tr>
-
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <StatusBadge type="interrompido" />
-              </td>
-            </tr>
+            {cycles.map((cycle) => (
+              <tr key={cycle.id}>
+                <td>{cycle.task}</td>
+                <td>{cycle.minutesAmount} minutos</td>
+                <td>{cycle.startDate.toISOString()}</td>
+                <td>
+                  {cycle.finishedDate && <StatusBadge type="finalizado" />}
+                  {cycle.interruptedDate && <StatusBadge type="interrompido" />}
+                  {!cycle.finishedDate && !cycle.interruptedDate && (
+                    <StatusBadge type="progresso" />
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </S.TableHistory>
       </S.HistoryContainer>

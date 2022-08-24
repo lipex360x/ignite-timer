@@ -1,5 +1,7 @@
 import { HistoryList } from '@/components/organisms/HistoryList'
 
-export function History() {
+const HistoryPage = () => {
   return <HistoryList />
 }
+
+export default HistoryPage
