@@ -2,7 +2,7 @@ import create from 'zustand'
 import { produce } from 'immer'
 import { CycleDto } from '@/Dtos/HomePageDto'
 
-type CyclesContextProps = {
+export type CyclesContextProps = {
   cycles: CycleDto[] | []
   activeCycle: CycleDto | null
   activeCycleId: string | null
@@ -13,52 +13,67 @@ type CyclesContextProps = {
   finishCycle: () => void
 }
 
-export const useCycleContext = create<CyclesContextProps>((set) => ({
-  activeCycle: null,
-  activeCycleId: null,
-  amountSecondsPassed: 0,
-  cycles: [],
+export const useCycleContext = create<CyclesContextProps>((set) => {
+  return {
+    activeCycle: null,
+    activeCycleId: null,
+    amountSecondsPassed: 0,
+    cycles: [],
 
-  setAmountSecondsPassed: (seconds) =>
-    set(() => ({ amountSecondsPassed: seconds })),
+    setAmountSecondsPassed: (seconds) =>
+      set(() => ({ amountSecondsPassed: seconds })),
 
-  setCycles: (newCycle) =>
-    set(({ cycles }) => ({
-      cycles: [...cycles, newCycle],
-      activeCycleId: newCycle.id,
-      activeCycle: newCycle,
-      amountSecondsPassed: 0,
-    })),
+    setCycles: (newCycle) =>
+      set((state) => {
+        return produce(state, (draft) => {
+          draft.cycles = [...state.cycles, newCycle]
+          draft.activeCycleId = newCycle.id
+          draft.activeCycle = newCycle
+          draft.amountSecondsPassed = 0
 
-  finishCycle: () =>
-    set((state) => {
-      const currentCycleIndex = state.cycles.findIndex(
-        (cycle) => cycle.id === state.activeCycleId,
-      )
+          const stateJSON = JSON.stringify(draft)
+          localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+        })
+      }),
 
-      if (currentCycleIndex < 0) return state
+    finishCycle: () =>
+      set((state) => {
+        const currentCycleIndex = state.cycles.findIndex(
+          (cycle) => cycle.id === state.activeCycleId,
+        )
 
-      document.title = 'Pomo finished'
-      return produce(state, (draft) => {
-        draft.cycles[currentCycleIndex].finishedDate = new Date()
-        draft.activeCycleId = null
-        draft.activeCycle = null
-      })
-    }),
+        if (currentCycleIndex < 0) return state
 
-  interruptCycle: () =>
-    set((state) => {
-      const currentCycleIndex = state.cycles.findIndex(
-        (cycle) => cycle.id === state.activeCycleId,
-      )
+        document.title = 'Pomo finished'
+        return produce(state, (draft) => {
+          draft.cycles[currentCycleIndex].finishedDate = new Date()
+          draft.activeCycleId = null
+          draft.activeCycle = null
 
-      if (currentCycleIndex < 0) return state
+          const stateJSON = JSON.stringify(draft)
+          localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+        })
+      }),
 
-      document.title = 'Pomo interrupted'
-      return produce(state, (draft) => {
-        draft.cycles[currentCycleIndex].interruptedDate = new Date()
-        draft.activeCycleId = null
-        draft.activeCycle = null
-      })
-    }),
-}))
+    interruptCycle: () =>
+      set((state) => {
+        const currentCycleIndex = state.cycles.findIndex(
+          (cycle) => cycle.id === state.activeCycleId,
+        )
+
+        if (currentCycleIndex < 0) return state
+
+        document.title = 'Pomo interrupted'
+        return produce(state, (draft) => {
+          draft.cycles[currentCycleIndex].interruptedDate = new Date()
+          draft.activeCycleId = null
+          draft.activeCycle = null
+          draft.amountSecondsPassed = 0
+
+          const stateJSON = JSON.stringify(draft)
+
+          localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+        })
+      }),
+  }
+})
