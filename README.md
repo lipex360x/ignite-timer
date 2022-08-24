@@ -22,7 +22,7 @@
 
 #### :zap: Introduction
 
-This is a boilerplate for React Project
+This is a SPA with React + Typescript to run Pomodore Cycles
 
 ---
 
