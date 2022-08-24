@@ -11,13 +11,7 @@ import { formValidationSchema, NewCycleFormDto } from './HomePage.schema'
 import { CycleDto } from '@/Dtos/HomePageDto'
 
 const HomePage = () => {
-  const {
-    activeCycle,
-    setCycles,
-    setActiveCycle,
-    setAmountSecondsPassed,
-    interruptCycle,
-  } = useCycleContext()
+  const { activeCycle, setCycles, interruptCycle } = useCycleContext()
 
   const newCycleForm = useForm<NewCycleFormDto>({
     resolver: zodResolver(formValidationSchema),
@@ -45,9 +39,6 @@ const HomePage = () => {
     }
 
     setCycles(newCycle)
-    setActiveCycle(id)
-    setAmountSecondsPassed(0)
-
     reset()
   }
 

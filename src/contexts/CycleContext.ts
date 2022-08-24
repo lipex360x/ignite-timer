@@ -6,9 +6,8 @@ type CyclesContextProps = {
   activeCycle: CycleDto | null
   activeCycleId: string | null
   amountSecondsPassed: number
-  setCycles: (cycle: CycleDto) => void
-  setActiveCycle: (cycleId: string) => void
-  setAmountSecondsPassed: (value: number) => void
+  setCycles: (newCycle: CycleDto) => void
+  setAmountSecondsPassed: (seconds: number) => void
   interruptCycle: () => void
   finishCycle: () => void
 }
@@ -19,16 +18,16 @@ export const useCycleContext = create<CyclesContextProps>((set) => ({
   amountSecondsPassed: 0,
   cycles: [],
 
-  setActiveCycle: (cycleId) =>
+  setAmountSecondsPassed: (seconds) =>
+    set(() => ({ amountSecondsPassed: seconds })),
+
+  setCycles: (newCycle) =>
     set(({ cycles }) => ({
-      activeCycle: cycles.find((cycle) => cycle.id === cycleId),
-      activeCycleId: cycleId,
+      cycles: [...cycles, newCycle],
+      activeCycleId: newCycle.id,
+      activeCycle: newCycle,
+      amountSecondsPassed: 0,
     })),
-
-  setAmountSecondsPassed: (value) =>
-    set(() => ({ amountSecondsPassed: value })),
-
-  setCycles: (cycle) => set((state) => ({ cycles: [...state.cycles, cycle] })),
 
   finishCycle: () =>
     set(({ cycles, activeCycleId }) => {
