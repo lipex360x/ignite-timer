@@ -1,5 +1,6 @@
-import { CycleDto } from '@/Dtos/HomePageDto'
 import create from 'zustand'
+import { produce } from 'immer'
+import { CycleDto } from '@/Dtos/HomePageDto'
 
 type CyclesContextProps = {
   cycles: CycleDto[] | []
@@ -30,28 +31,34 @@ export const useCycleContext = create<CyclesContextProps>((set) => ({
     })),
 
   finishCycle: () =>
-    set(({ cycles, activeCycleId }) => {
+    set((state) => {
+      const currentCycleIndex = state.cycles.findIndex(
+        (cycle) => cycle.id === state.activeCycleId,
+      )
+
+      if (currentCycleIndex < 0) return state
+
       document.title = 'Pomo finished'
-      return {
-        cycles: cycles.map((cycle) => {
-          if (cycle.id === activeCycleId) cycle.finishedDate = new Date()
-          return cycle
-        }),
-        activeCycle: null,
-        activeCycleId: null,
-      }
+      return produce(state, (draft) => {
+        draft.cycles[currentCycleIndex].finishedDate = new Date()
+        draft.activeCycleId = null
+        draft.activeCycle = null
+      })
     }),
 
   interruptCycle: () =>
-    set(({ cycles, activeCycleId }) => {
+    set((state) => {
+      const currentCycleIndex = state.cycles.findIndex(
+        (cycle) => cycle.id === state.activeCycleId,
+      )
+
+      if (currentCycleIndex < 0) return state
+
       document.title = 'Pomo interrupted'
-      return {
-        cycles: cycles.map((cycle) => {
-          if (cycle.id === activeCycleId) cycle.interruptedDate = new Date()
-          return cycle
-        }),
-        activeCycle: null,
-        activeCycleId: null,
-      }
+      return produce(state, (draft) => {
+        draft.cycles[currentCycleIndex].interruptedDate = new Date()
+        draft.activeCycleId = null
+        draft.activeCycle = null
+      })
     }),
 }))
