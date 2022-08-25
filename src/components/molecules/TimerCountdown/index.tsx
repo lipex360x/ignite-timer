@@ -1,22 +1,19 @@
-import { CyclesContextProps, useCycleContext } from '@/contexts/CycleContext'
+import { useCycleContext, useGetStorage } from '@/contexts/CycleContext'
 import { differenceInSeconds } from 'date-fns'
 import { useEffect } from 'react'
 import * as S from './styles'
 
 export const TimerCountdown = () => {
   const {
-    activeCycle,
     activeCycleId,
     finishCycle,
     amountSecondsPassed,
     setAmountSecondsPassed,
   } = useCycleContext()
 
-  const statusCycle = localStorage.getItem('@ignite-pomodore:cycle-state-1.0.0')
+  const storageCycles = useGetStorage()
 
-  const parsedCycle: CyclesContextProps = statusCycle && JSON.parse(statusCycle)
-
-  console.log(!!parsedCycle && parsedCycle.activeCycle)
+  const activeCycle = !!storageCycles && storageCycles.activeCycle
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
@@ -39,7 +36,7 @@ export const TimerCountdown = () => {
       interval = setInterval(() => {
         const secondsDifference = differenceInSeconds(
           new Date(),
-          activeCycle.startDate,
+          new Date(activeCycle.startDate),
         )
 
         if (secondsDifference >= totalSeconds) {

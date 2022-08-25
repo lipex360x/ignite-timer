@@ -6,12 +6,16 @@ import * as S from './styles'
 import { TimerCountdown } from '@/components/molecules/TimerCountdown'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCycleContext } from '@/contexts/CycleContext'
+import { useCycleContext, useGetStorage } from '@/contexts/CycleContext'
 import { formValidationSchema, NewCycleFormDto } from './HomePage.schema'
 import { CycleDto } from '@/Dtos/HomePageDto'
 
 const HomePage = () => {
-  const { activeCycle, setCycles, interruptCycle } = useCycleContext()
+  const { setCycles, interruptCycle } = useCycleContext()
+
+  const storageCycles = useGetStorage()
+
+  const activeCycle = !!storageCycles && storageCycles.activeCycle
 
   const newCycleForm = useForm<NewCycleFormDto>({
     resolver: zodResolver(formValidationSchema),

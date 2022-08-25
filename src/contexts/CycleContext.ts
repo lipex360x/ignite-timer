@@ -13,6 +13,20 @@ export type CyclesContextProps = {
   finishCycle: () => void
 }
 
+export const useSetStorage = (data: object) => {
+  const stateJSON = JSON.stringify(data)
+
+  localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+}
+
+export const useGetStorage = () => {
+  const statusCycle = localStorage.getItem('@ignite-pomodore:cycle-state-1.0.0')
+
+  const parsedCycle: CyclesContextProps = statusCycle && JSON.parse(statusCycle)
+
+  return parsedCycle
+}
+
 export const useCycleContext = create<CyclesContextProps>((set) => {
   return {
     activeCycle: null,
@@ -31,48 +45,48 @@ export const useCycleContext = create<CyclesContextProps>((set) => {
           draft.activeCycle = newCycle
           draft.amountSecondsPassed = 0
 
-          const stateJSON = JSON.stringify(draft)
-          localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+          useSetStorage(draft)
         })
       }),
 
     finishCycle: () =>
       set((state) => {
-        const currentCycleIndex = state.cycles.findIndex(
-          (cycle) => cycle.id === state.activeCycleId,
+        const storageCycles = useGetStorage()
+
+        const currentCycleIndex = storageCycles.cycles.findIndex(
+          (cycle) => cycle.id === storageCycles.activeCycleId,
         )
 
         if (currentCycleIndex < 0) return state
 
         document.title = 'Pomo finished'
-        return produce(state, (draft) => {
+        return produce(storageCycles, (draft) => {
           draft.cycles[currentCycleIndex].finishedDate = new Date()
           draft.activeCycleId = null
           draft.activeCycle = null
 
-          const stateJSON = JSON.stringify(draft)
-          localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+          useSetStorage(draft)
         })
       }),
 
     interruptCycle: () =>
       set((state) => {
-        const currentCycleIndex = state.cycles.findIndex(
-          (cycle) => cycle.id === state.activeCycleId,
+        const storageCycles = useGetStorage()
+
+        const currentCycleIndex = storageCycles.cycles.findIndex(
+          (cycle) => cycle.id === storageCycles.activeCycleId,
         )
 
         if (currentCycleIndex < 0) return state
 
         document.title = 'Pomo interrupted'
-        return produce(state, (draft) => {
+        return produce(storageCycles, (draft) => {
           draft.cycles[currentCycleIndex].interruptedDate = new Date()
           draft.activeCycleId = null
           draft.activeCycle = null
           draft.amountSecondsPassed = 0
 
-          const stateJSON = JSON.stringify(draft)
-
-          localStorage.setItem('@ignite-pomodore:cycle-state-1.0.0', stateJSON)
+          useSetStorage(draft)
         })
       }),
   }
