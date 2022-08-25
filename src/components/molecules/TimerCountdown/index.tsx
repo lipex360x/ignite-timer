@@ -41,10 +41,10 @@ export const TimerCountdown = () => {
 
         if (secondsDifference >= totalSeconds) {
           finishCycle()
-          setAmountSecondsPassed(totalSeconds)
+          setAmountSecondsPassed()
           clearInterval(interval)
         } else {
-          setAmountSecondsPassed(secondsDifference)
+          setAmountSecondsPassed()
         }
       }, 1000)
     }

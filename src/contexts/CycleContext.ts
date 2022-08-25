@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 import create from 'zustand'
 import { produce } from 'immer'
 import { CycleDto } from '@/Dtos/HomePageDto'
+import { differenceInSeconds } from 'date-fns'
 
 export type CyclesContextProps = {
   cycles: CycleDto[] | []
@@ -8,7 +10,7 @@ export type CyclesContextProps = {
   activeCycleId: string | null
   amountSecondsPassed: number
   setCycles: (newCycle: CycleDto) => void
-  setAmountSecondsPassed: (seconds: number) => void
+  setAmountSecondsPassed: () => void
   interruptCycle: () => void
   finishCycle: () => void
 }
@@ -34,20 +36,34 @@ export const useCycleContext = create<CyclesContextProps>((set) => {
     amountSecondsPassed: 0,
     cycles: [],
 
-    setAmountSecondsPassed: (seconds) =>
-      set(() => ({ amountSecondsPassed: seconds })),
+    setAmountSecondsPassed: () =>
+      set((state) =>
+        produce(state, (draft) => {
+          const storageCycles = useGetStorage()
+
+          const seconds = storageCycles.activeCycle
+            ? differenceInSeconds(
+              new Date(),
+              new Date(storageCycles.activeCycle.startDate),
+            )
+            : 0
+
+          draft.amountSecondsPassed = seconds
+        }),
+      ),
+    // ({ amountSecondsPassed: seconds })),
 
     setCycles: (newCycle) =>
-      set((state) => {
-        return produce(state, (draft) => {
+      set((state) =>
+        produce(state, (draft) => {
           draft.cycles = [...state.cycles, newCycle]
           draft.activeCycleId = newCycle.id
           draft.activeCycle = newCycle
           draft.amountSecondsPassed = 0
 
           useSetStorage(draft)
-        })
-      }),
+        }),
+      ),
 
     finishCycle: () =>
       set((state) => {
